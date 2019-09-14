@@ -1,0 +1,56 @@
+---
+title: "Gapminder Practice"
+author: "Megan Luke"
+date: "9/13/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(gapminder)
+library(tidyverse)
+```
+#Introducing Myself to the Data
+
+```{r}
+summary(gapminder)
+```
+```{r}
+as.tibble(gapminder)
+```
+```{r}
+names(gapminder)
+```
+
+#Visualizing the Data
+
+```{r}
+p <- ggplot(filter(gapminder, continent != "Oceania"),
+            aes(x = gdpPercap, y = lifeExp)) 
+p <- p + scale_x_log10() 
+p + geom_point() 
+p + geom_point(aes(color = continent)) 
+p + geom_point(alpha = (1/3), size = 3) + geom_smooth(lwd = 3, se = FALSE)
+p + geom_point(alpha = (1/3), size = 3) + facet_wrap(~ continent) +
+  geom_smooth(lwd = 1.5, se = FALSE)
+```
+
+These plots exclude "Oceana" from the visualization due to the fact that this region has far fewer records than the other four. The scale is transformed by log10 for all plots. Life expectancy is plotted against gross domestic product per capita. There is a relatively clear connection between life expectancy and GDP with values clustering along a trend line. You can see in the plots that lower GDP tends to correspond to a lower life expectancy, and people in Africa have a lower GDP and life expectancy than those in Europe, with those in the Americas being higher in both than those in Africa, and those in Asia being more evenly distributed across the scale.
+
+```{r}
+gapminderviz <- gapminder %>%
+  filter(continent == "Africa") %>%
+  select(year, lifeExp, country, pop)
+```
+
+```{r}  
+j <- ggplot(gapminderviz, aes(year, lifeExp, color = country))
+j + geom_point() + ggtitle("Fig 1: Change in Life Expectancy for Countries in Africa 1950-2010")
+```
+
+```{r}  
+t <- ggplot(gapminderviz, aes(year, pop, color = country))
+t + geom_point()+ ggtitle("Fig 2: Change in Population for Countries in Africa 1950-2010")
+```
+
+These two plots (Fig 1 and Fig 2)demonstrate demographic data for all of the surveyed countries in Africa, organized by year. It is apparent in Fig 1 that most countries show a trend towards higher life expectancy as well as higher populations in general in Fig 2. Nigeria appears to be the leading nation in terms of population growth as well as increase in life expectancy.
